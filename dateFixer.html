@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+Kwota podatku : <br>
+<input id="kz" type="tel"><br><br>
+Termin platnosci podatku:<br>
+Rok:<input id="year" type="tel"><br>
+Miesiac:<input id="month" type="tel"><br>
+Dzien:<input id="day" type="tel"><br>
+
+
+<button onclick="calculate()">Oblicz</button><br><br><br>
+Suma na dzien dzisiejszy :<div id="sum"></div><br>
+Odsetki : <div id="perc"></div><br>
+<script>
+
+
+
+var historyData;
+window.onload = function(){
+historyData = [
+{ startDate : new Date("1998","04", "22"), perc : 0.52 },
+{ startDate : new Date("1998","06", "17"), perc : 0.48 },
+{ startDate : new Date("1998","09", "29"), perc : 0.44 },
+{ startDate : new Date("1998","11", "10"), perc : 0.4 },
+{ startDate : new Date("1999","00", "21"), perc : 0.34 },
+{ startDate : new Date("1999","10", "18"), perc : 0.41 },
+{ startDate : new Date("2000","01", "24"), perc : 0.43 },
+{ startDate : new Date("2000","07", "31"), perc : 0.46 },
+{ startDate : new Date("2001","02", "1"), perc : 0.44 },
+{ startDate : new Date("2001","02", "29"), perc : 0.42 },
+{ startDate : new Date("2001","05", "28"), perc : 0.39 },
+{ startDate : new Date("2001","07", "23"), perc : 0.37 },
+{ startDate : new Date("2001","09", "26"), perc : 0.34 },
+{ startDate : new Date("2001","10", "29"), perc : 0.31 },
+{ startDate : new Date("2002","00", "31"), perc : 0.27 },
+{ startDate : new Date("2002","03", "26"), perc : 0.25 },
+{ startDate : new Date("2002","04", "30"), perc : 0.24 },
+{ startDate : new Date("2002","05", "27"), perc : 0.23 },
+{ startDate : new Date("2002","07", "29"), perc : 0.21 },
+{ startDate : new Date("2002","08", "26"), perc : 0.2 },
+{ startDate : new Date("2002","09", "24"), perc : 0.18 },
+{ startDate : new Date("2002","10", "28"), perc : 0.175 },
+{ startDate : new Date("2003","00", "30"), perc : 0.17 },
+{ startDate : new Date("2003","01", "27"), perc : 0.16 },
+{ startDate : new Date("2003","02", "27"), perc : 0.155 },
+{ startDate : new Date("2003","03", "25"), perc : 0.145 },
+{ startDate : new Date("2003","04", "29"), perc : 0.14 },
+{ startDate : new Date("2003","05", "26"), perc : 0.135 },
+{ startDate : new Date("2004","06", "1"), perc : 0.145 },
+{ startDate : new Date("2004","06", "29"), perc : 0.15 },
+{ startDate : new Date("2004","07", "26"), perc : 0.16 },
+{ startDate : new Date("2005","02", "31"), perc : 0.15 },
+{ startDate : new Date("2005","03", "28"), perc : 0.14 }, 
+{ startDate : new Date("2005","05", "30"), perc : 0.13 },
+{ startDate : new Date("2005","06", "28"), perc : 0.125 },
+{ startDate : new Date("2005","08", "1"), perc : 0.12 },
+{ startDate : new Date("2006","01", "1"), perc : 0.115 },
+{ startDate : new Date("2006","02", "1"), perc : 0.11 },
+{ startDate : new Date("2007","03", "26"), perc : 0.115 },
+{ startDate : new Date("2007","05", "28"), perc : 0.12 },
+{ startDate : new Date("2007","07", "30"), perc : 0.125 },
+{ startDate : new Date("2007","10", "29"), perc : 0.13 },
+{ startDate : new Date("2008","00", "31"), perc : 0.135 },
+{ startDate : new Date("2008","01", "28"), perc : 0.14 },
+{ startDate : new Date("2008","02", "27"), perc : 0.145 },
+{ startDate : new Date("2008","05", "26"), perc : 0.15 },
+{ startDate : new Date("2008","10", "27"), perc : 0.145 },
+{ startDate : new Date("2008","11", "24"), perc : 0.13 },
+{ startDate : new Date("2009","00", "28"), perc : 0.115 },
+{ startDate : new Date("2009","01", "26"), perc : 0.11 },
+{ startDate : new Date("2009","02", "26"), perc : 0.105 },
+{ startDate : new Date("2009","05", "25"), perc : 0.1 },
+{ startDate : new Date("2010","10", "9"), perc : 0.12 },
+{ startDate : new Date("2011","00", "20"), perc : 0.125 },
+{ startDate : new Date("2011","03", "6"), perc : 0.13 },
+{ startDate : new Date("2011","04", "12"), perc : 0.135 },
+{ startDate : new Date("2011","05", "9"), perc : 0.14 },
+{ startDate : new Date("2012","04", "10"), perc : 0.145 },
+{ startDate : new Date("2012","10", "8"), perc : 0.14 },
+{ startDate : new Date("2012","11", "6"), perc : 0.135 },
+{ startDate : new Date("2013","00", "10"), perc : 0.13 },
+{ startDate : new Date("2013","01", "7"), perc : 0.125 },
+{ startDate : new Date("2013","02", "7"), perc : 0.115 },
+{ startDate : new Date("2013","04", "9"), perc : 0.11 },
+{ startDate : new Date("2013","05", "6"), perc : 0.105 },
+{ startDate : new Date("2013","06", "4"), perc : 0.1 },
+{ startDate : new Date("2014","09", "9"), perc : 0.08}
+];
+
+}
+
+function getDate(){
+    var year = document.getElementById("year");
+    var month = document.getElementById("month");
+    var day = document.getElementById("day");
+
+
+    return new Date(year.value, month.value - 1, day.value);
+}
+
+function getKZ(){
+    var kz = document.getElementById("kz");
+
+    return kz.value;
+}
+
+function calculate(){
+    var kz = getKZ();
+    var d = getDate();
+    console.log(kz);
+    console.log(d);
+    var sum = 0;
+
+    if (d < historyData[0].startDate){
+        throw Error("Najwczesniejsza data to 22 maj 1998 roku");
+    }
+
+    if (d >= historyData[historyData.length-1].startDate){
+        endDateSum();
+        return sum; 
+    }
+
+    var subSetIndex = (function() {
+        for (let index = 0; index < historyData.length-1; index++) {
+           
+            if (historyData[index].startDate.getTime() == d.getTime()){
+                return index;
+            }
+
+            if (historyData[index].startDate < d && historyData[index+1].startDate > d){
+                return index;                    
+            }
+
+            
+        }
+    })();
+
+    var subSetSum = (function(){
+        var endDate = historyData[subSetIndex+1].startDate;
+        endDate.setDate(historyData[subSetIndex+1].startDate.getDate() - 1);
+        
+        var subSetDays = ((endDate.getTime() - d.getTime())/(1000*60*60*24));
+        subSetDays = Math.round(subSetDays);
+        //console.log(subSetDays);
+        return (kz * subSetDays * historyData[subSetIndex].perc) / 365;
+    })();
+    
+    sum = subSetSum;
+
+    (function(){
+        
+        for (let index = subSetIndex+1; index < historyData.length-1; index++) {
+
+            var endDate = historyData[index+1].startDate;
+            endDate.setDate(historyData[index+1].startDate.getDate() - 1);
+            var startDate = historyData[index].startDate;
+            var subSetDays = ((endDate.getTime() - startDate.getTime())/(1000*60*60*24));
+            subSetDays = Math.round(subSetDays);
+            
+            //console.log("from : " + startDate.toLocaleDateString("pl-PL") + " to : " + endDate.toLocaleDateString("pl-PL"));
+            //console.log(subSetDays);
+            sum += (kz * subSetDays * historyData[index].perc) / 365;
+        }
+
+        endDateSum();
+    })();
+    
+    function endDateSum(){
+        var endDate = Date.now();
+        var startDate = historyData[historyData.length-1].startDate;
+        var endDays = ((endDate - startDate.getTime())/(1000*60*60*24));
+        endDays = Math.round(endDays) - 1;
+    
+        //console.log(endDays);
+        //console.log((kz * endDays * historyData[historyData.length-1].perc) / 365);
+        sum += (kz * endDays * historyData[historyData.length-1].perc) / 365;
+    }
+    
+    console.log(sum);
+    let totalSum = parseFloat(sum) + parseFloat(kz);
+    document.getElementById("sum").innerText = totalSum.toFixed(2);
+    document.getElementById("perc").innerText = sum.toFixed(2);
+}
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
