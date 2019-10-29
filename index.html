@@ -111,6 +111,21 @@ function getKZ(){
     return kz.value;
 }
 
+function getSubSetIndex(d){
+    for (let index = 0; index < historyData.length-1; index++) {
+           
+           if (historyData[index].startDate.getTime() == d.getTime()){
+               return index;
+           }
+
+           if (historyData[index].startDate < d && historyData[index+1].startDate > d){
+               return index;                    
+           }
+
+           
+       }
+}
+
 function calculate(){
     var kz = getKZ();
     var d = getDate();
@@ -123,24 +138,11 @@ function calculate(){
     }
 
     if (d >= historyData[historyData.length-1].startDate){
-        endDateSum();
+        lastSubSetSum();
         return sum; 
     }
 
-    var subSetIndex = (function() {
-        for (let index = 0; index < historyData.length-1; index++) {
-           
-            if (historyData[index].startDate.getTime() == d.getTime()){
-                return index;
-            }
-
-            if (historyData[index].startDate < d && historyData[index+1].startDate > d){
-                return index;                    
-            }
-
-            
-        }
-    })();
+    var subSetIndex = getSubSetIndex(d);
 
     var subSetSum = (function(){
         var endDate = historyData[subSetIndex+1].startDate;
@@ -165,7 +167,7 @@ function calculate(){
             subSetDays = Math.round(subSetDays);
             
             //console.log("from : " + startDate.toLocaleDateString("pl-PL") + " to : " + endDate.toLocaleDateString("pl-PL"));
-            //console.log(subSetDays);
+            console.log(subSetDays);
             sum += (kz * subSetDays * historyData[index].perc) / 365;
         }
 
@@ -178,13 +180,29 @@ function calculate(){
         var endDays = ((endDate - startDate.getTime())/(1000*60*60*24));
         endDays = Math.round(endDays) - 1;
     
-        //console.log(endDays);
+        console.log(endDays);
         //console.log((kz * endDays * historyData[historyData.length-1].perc) / 365);
         sum += (kz * endDays * historyData[historyData.length-1].perc) / 365;
+        let totalSum = parseFloat(sum) + parseFloat(kz);
+        document.getElementById("sum").innerText = totalSum.toFixed(2);
+        document.getElementById("perc").innerText = sum.toFixed(2);
     }
     
     console.log(sum);
     let totalSum = parseFloat(sum) + parseFloat(kz);
+    document.getElementById("sum").innerText = totalSum.toFixed(2);
+    document.getElementById("perc").innerText = sum.toFixed(2);
+}
+
+function lastSubSetSum(){
+    let d = getDate();
+    let endDate = Date.now();
+    let startDate = historyData[historyData.length-1].startDate;
+    let endDays = ((endDate - d.getTime())/(1000*60*60*24));
+    endDays = Math.round(endDays) - 1;
+    console.log(endDays);
+    let sum = (getKZ() * endDays * historyData[historyData.length-1].perc) / 365;
+    let totalSum = parseFloat(sum) + parseFloat(getKZ());
     document.getElementById("sum").innerText = totalSum.toFixed(2);
     document.getElementById("perc").innerText = sum.toFixed(2);
 }
